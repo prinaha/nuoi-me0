@@ -1,0 +1,61 @@
+<?php
+// Set the initial position and velocity of the bird
+$birdY = 150;
+$velocity = 0;
+$gravity = 0.6;
+$flap = -10;
+$gameOver = false;
+
+// Update the bird's position
+function updateBird()
+{
+    global $birdY, $velocity, $gravity, $flap, $gameOver;
+
+    if (!$gameOver) {
+        $velocity += $gravity;
+        $birdY += $velocity;
+    }
+
+    // Check for collisions or game over conditions
+    if ($birdY < 0 || $birdY > 400) {
+        $gameOver = true;
+    }
+}
+
+// Handle user input (flapping the bird)
+function flapBird()
+{
+    global $velocity, $flap;
+    $velocity = $flap;
+}
+
+// Start the game loop
+while (!$gameOver) {
+    // Update the bird's position
+    updateBird();
+
+    // Clear the screen
+    echo '<pre>' . str_repeat(PHP_EOL, 30) . '</pre>';
+
+    // Render the game
+    echo '<pre>';
+    for ($i = 0; $i < 20; $i++) {
+        // Render the bird
+        if ($i === (int)($birdY / 20)) {
+            echo '>';
+        } else {
+            echo '.';
+        }
+    }
+    echo '</pre>';
+
+    // Wait for a short delay
+    usleep(50000);
+}
+
+echo "Game over!";
+
+// Handle user input (flapping the bird) when the user presses a key
+if (isset($_GET['action']) && $_GET['action'] === 'flap') {
+    flapBird();
+}
